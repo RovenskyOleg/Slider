@@ -1,6 +1,7 @@
 var extend = function ( defaults, options ) {
-    var extended = {};
-    var prop;
+    var extended = {},
+        prop;
+        
     for (prop in defaults) {
         if (Object.prototype.hasOwnProperty.call(defaults, prop)) {
             extended[prop] = defaults[prop];
