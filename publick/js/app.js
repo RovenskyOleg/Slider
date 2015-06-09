@@ -73,16 +73,15 @@ function BaseSlider(data) {
         this.setImg();             
         
         if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) {
-           this.detectswipe(this.configData.element, this.change, data);
+           this.detectswipe(this.configData.element);
         } else {
-           //console.log(this.configData);
            this.configData.btn_left.onclick = this.prevImage.bind(this);
            this.configData.btn_right.onclick = this.nextImage.bind(this);
         
         }  
     };
 
-    this.nextImage = function (data) {
+    this.nextImage = function () {
         this.configData.imgNum = this.configData.imgNum + 1;
 
         this.cheackImg(this.configData);
@@ -90,7 +89,7 @@ function BaseSlider(data) {
         this.configData.element.src = this.configData.images[this.configData.imgNum];      
     }
 
-    this.prevImage = function (data) {
+    this.prevImage = function () {
         this.configData.imgNum = this.configData.imgNum - 1;
 
         this.cheackImg(this.configData);
@@ -108,11 +107,59 @@ function BaseSlider(data) {
         return data.imgNum
     }
 
-    // this.automanualMode = function (data) {
-    //     var swipeDelay = configData.swipeDelay || 1000;
+    this.detectswipe = function (el) {
+        var self = this,
+            min_x = 20;  
+            max_x = 40, 
+            min_y = 40,  
+            max_y = 50, 
+            direc = "",
+            swipe_det = {
+                'sX': 0,
+                'sY': 0,
+                'eX': 0,
+                'eY': 0
+            }
 
-    //     this.setImg(data);                             // ??????????
-    // };   
+        el.addEventListener('touchstart',function(e){
+            var t = e.touches[0];
+
+            swipe_det.sX = t.screenX; 
+            swipe_det.sY = t.screenY;
+        },false);
+
+        el.addEventListener('touchmove',function(e){
+            var t;
+
+            e.preventDefault();
+            t = e.touches[0];
+            swipe_det.eX = t.screenX; 
+            swipe_det.eY = t.screenY;    
+        },false);
+
+        el.addEventListener('touchend', function(e){
+            if ((((swipe_det.eX - min_x > swipe_det.sX) || (swipe_det.eX + min_x < swipe_det.sX)) && ((swipe_det.eY < swipe_det.sY + max_y) && (swipe_det.sY > swipe_det.eY - max_y)))) {
+                if(swipe_det.eX > swipe_det.sX) direc = "right";
+                else direc = "left";
+            }
+
+            if (direc != "") {
+                if (direc === 'left') {
+                    self.prevImage();
+                } else if (direc === 'right') {
+                    self.nextImage();
+                }
+            }
+            
+            direc = "";
+        },false);    
+    }
+
+    this.automanualMode = function () {
+        var swipeDelay = this.configData.swipeDelay || 1000;
+
+        this.setImg();                                                         
+    };   
 
     return this;
 }
@@ -299,10 +346,16 @@ window.onload = function() {
     slider_manual.slider.init(document.getElementById('slideshow5'),document.getElementById('left5'),document.getElementById('right5'));
     slider_manual.fadein.init(document.getElementById('slideshow6'),document.getElementById('left6'),document.getElementById('right6'));
 
-    // // automanual
-    // slider.baseSlider.init(configManual, document.getElementById('slideshow7'));
-    // slider.slider.init(configManual, document.getElementById('slideshow8'));
-    // slider.fadein.init(configManual, document.getElementById('slideshow9'));
+    // automanual
+    var slider_automanual = {
+        baseSlider: new BaseSlider(configAutomanual),
+        slider: new Slider(configAutomanual),
+        fadein: new FadeIn(configAutomanual)
+    };
+    
+    slider_automanual.baseSlider.init(document.getElementById('slideshow7'), document.getElementById('left7'),document.getElementById('right7'));
+    // slider_automanual.slider.init(document.getElementById('slideshow8'), document.getElementById('left8'),document.getElementById('right8'));
+    // slislider_automanualder.fadein.init(document.getElementById('slideshow9'), document.getElementById('left9'),document.getElementById('right9'));
    
     //slider_type.fadein.init(configManual);
     // slider_type.baseSlider.render();
