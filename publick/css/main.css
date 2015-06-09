@@ -48,9 +48,9 @@ img {
     width: 250px;
 }
 
-/*.hide {
+.hide {
     display: none;
-}*/
+}
 
 .nav.left {
      -webkit-transform: rotate(-90deg);
