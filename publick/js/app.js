@@ -1,7 +1,7 @@
 // "use strict";
 
 function BaseSlider(data) {
-     this.defaultConfig = {
+    this.defaultConfig = {
             images: [
                 '../publick/img/1.png',
                 '../publick/img/2.png',
@@ -21,12 +21,15 @@ function BaseSlider(data) {
         this.initData = {
             'imgLength': this.configData.images.length - 1,
             'imgNum': 0,
+            'start': true,
             'element': el,
             'btn_left': btn_left,
             'btn_right': btn_right
         }
 
         this.configData = extend( this.configData, this.initData ) || this.defaultConfig;
+
+        this.setImg();
 
         this.start();
     };
@@ -50,9 +53,7 @@ function BaseSlider(data) {
     this.autoMode = function () {
         var swipeDelay = this.configData.swipeDelay || 1000;
 
-        this.setImg();                            
-
-        setInterval(this.changeSlideAuto, swipeDelay, this.configData);
+        setInterval(this.changeSlideAuto, swipeDelay, this.configData);                           
     };
 
     this.changeSlideAuto = function (data) {
@@ -70,14 +71,11 @@ function BaseSlider(data) {
     }
 
     this.manualMode = function () {
-        this.setImg();             
-        
         if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) {
-           this.detectswipe(this.configData.element);
+            this.detectswipe(this.configData.element);
         } else {
-           this.configData.btn_left.onclick = this.prevImage.bind(this);
-           this.configData.btn_right.onclick = this.nextImage.bind(this);
-        
+            this.configData.btn_left.onclick = this.prevImage.bind(this);
+            this.configData.btn_right.onclick = this.nextImage.bind(this); 
         }  
     };
 
@@ -143,29 +141,71 @@ function BaseSlider(data) {
                 else direc = "left";
             }
 
-            if (direc != "") {
-                if (direc === 'left') {
-                    self.prevImage();
-                } else if (direc === 'right') {
-                    self.nextImage();
-                }
-            }
-            
-            direc = "";
+            self.changeSwipeSlide(direc);
         },false);    
     }
 
+    this.changeSwipeSlide = function (direc) {
+        if (direc != "") {
+            if (direc === 'left') {
+                this.prevImage();
+            } else if (direc === 'right') {
+                this.nextImage();
+            }
+        }
+
+        direc = "";
+    }
+
+    this.slider;
+
     this.automanualMode = function () {
         var swipeDelay = this.configData.swipeDelay || 1000;
+        
+        this.slider = setInterval(this.changeSlideAuto, swipeDelay, this.configData); 
 
-        this.setImg();                                                         
-    };   
+        if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) {
+            this.detectswipe(this.configData.element);
+            
+            this.changeSwipeSlide = function (direc) {
+                if (direc != "") {
+                    if (direc === 'left') {
+                        this.changeSlidePrev();
+                    } else if (direc === 'right') {
+                        this.changeSlideNext();
+                    }
+                }
+
+                direc = "";
+            }
+        } else {
+            this.configData.btn_left.onclick = this.changeSlidePrev.bind(this); 
+            this.configData.btn_right.onclick = this.changeSlideNext.bind(this); 
+        }
+    }; 
+
+    this.runSlider = function () {
+        var swipeDelay = this.configData.swipeDelay || 1000;
+        this.slider = setInterval(this.changeSlideAuto, swipeDelay, this.configData); 
+    }
+
+    this.changeSlideNext = function () {
+        clearInterval(this.slider);
+        console.log(this.slider)
+        this.nextImage();
+        this.runSlider();
+    }
+    this.changeSlidePrev = function () {
+        clearInterval(this.slider);
+        this.prevImage();
+        this.runSlider();
+    }   
 
     return this;
 }
 
 function Slider(data) {
-    this.configData = data;
+    this.configData = data || this.defaultConfig;
 
     this.changeSlideAuto = function (data) {
         data.element.classList.remove("slide");
@@ -219,7 +259,7 @@ function Slider(data) {
 Slider.prototype = new BaseSlider();
 
 function FadeIn(data) {
-    this.configData = data;
+    this.configData = data || this.defaultConfig;
 
     this.changeSlideAuto = function (data) {
         data.element.className += " fadeIn";
@@ -335,7 +375,7 @@ window.onload = function() {
     slider.slider.init(document.getElementById('slideshow2'), document.getElementById('left2'),document.getElementById('right2'));
     slider.fadein.init(document.getElementById('slideshow3'), document.getElementById('left3'),document.getElementById('right4'));
 
-    // // manual
+    // manual
     var slider_manual = {
         baseSlider: new BaseSlider(configManual),
         slider: new Slider(configManual),
@@ -354,11 +394,8 @@ window.onload = function() {
     };
     
     slider_automanual.baseSlider.init(document.getElementById('slideshow7'), document.getElementById('left7'),document.getElementById('right7'));
-    // slider_automanual.slider.init(document.getElementById('slideshow8'), document.getElementById('left8'),document.getElementById('right8'));
-    // slislider_automanualder.fadein.init(document.getElementById('slideshow9'), document.getElementById('left9'),document.getElementById('right9'));
-   
-    //slider_type.fadein.init(configManual);
-    // slider_type.baseSlider.render();
+    slider_automanual.slider.init(document.getElementById('slideshow8'), document.getElementById('left8'),document.getElementById('right8'));
+    slider_automanual.fadein.init(document.getElementById('slideshow9'), document.getElementById('left9'),document.getElementById('right9'));
 
     return this    
 }
