@@ -1,0 +1,46 @@
+{
+    "config": {
+        "images": [
+            "../public/img/1.png",
+            "../public/img/2.png",
+            "../public/img/3.png",
+            "../public/img/4.png"
+        ],
+        "mode": "auto",
+        "swipeSpeed": 500,
+        "swipeDelay": 1500
+    },
+    "configAuto": {
+        "images": [
+            "../public/img/1.png",
+            "../public/img/2.png",
+            "../public/img/3.png",
+            "../public/img/4.png"
+        ],
+        "mode": "auto",
+        "swipeSpeed": 500,
+        "swipeDelay": 2000
+    },
+    "configManual": {
+        "images": [
+            "../public/img/1.png",
+            "../public/img/2.png",
+            "../public/img/3.png",
+            "../public/img/4.png"
+        ],
+        "mode": "manual",
+        "swipeSpeed": 500,
+        "swipeDelay": 2000
+    },
+    "configAutomanual": {
+        "images": [
+            "../public/img/1.png",
+            "../public/img/2.png",
+            "../public/img/3.png",
+            "../public/img/4.png"
+        ],
+        "mode": "automanual",
+        "swipeSpeed": 500,
+        "swipeDelay": 2000
+    }         
+}

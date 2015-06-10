@@ -4,7 +4,7 @@ window.onload = function() {
     var facade = new Facade();
     var self = this;
     var cachedData;
-    var uri = 'publick/data/config_data.json';
+    var uri = 'public/data/config_data.json';
 
     facade.getResult("GET", uri, mockCallback);
 
